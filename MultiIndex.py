@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Sequence, Union, TypeAlias, Any, Generator, Literal
 from collections.abc import Sequence as TypeSequence
 from itertools import product
-import math
 
 BasicTuple : TypeAlias = tuple[Union[str, int, float], ...]
 Basic : TypeAlias = Union[int, str, float, BasicTuple]
@@ -42,6 +41,11 @@ class MultiIndex(object):
         self._names = names
 
     @staticmethod
+    def _isnan(value : float) -> bool:
+        '''Checks whether the float is not a number.'''
+        return value != value
+    
+    @staticmethod
     def _verify_item(item : Basic) -> None:
         '''This method checks whether or not the inputted item is str, int, float or a tuple consisting of them.'''
 
@@ -52,7 +56,7 @@ class MultiIndex(object):
         elif not isinstance(item, (str, int, float)):
             raise TypeError(f"\"{type(item)}\" is not a valid MultiIndex type. It must be either str, int, float or a tuple consisting of them.")
         elif isinstance(item, float):
-            if math.isnan(item):
+            if MultiIndex._isnan(item):
                 raise TypeError(f"Float of nan is not a valid MultiIndex type.")
         
     @staticmethod
@@ -861,4 +865,5 @@ class MultiIndex(object):
     f"Mapping :\n{str(self._mapping)}\n\n"
     f"Reverse mapping :\n{str(self._reverse_mapping)}\n\n"
     f"number of levels : {str(self._levels)}\n\n"
+
     f"Integrity checks:\n{str(self.verify_integrity())}")
