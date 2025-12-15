@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Union, TypeAlias, Any, Literal
 from collections.abc import Sequence as TypeSequence
-import math
 
 BasicTuple : TypeAlias = tuple[Union[str, int, float], ...]
 Basic : TypeAlias = Union[int, str, float, BasicTuple]
@@ -19,6 +18,11 @@ class Index(object):
             self._extend_index(sequence)
             if cache:
                 self._create_cache()
+
+    @staticmethod
+    def _isnan(value : float) -> bool:
+        '''Checks whether the float is not a number.'''
+        return value != value
     
     @staticmethod
     def _verify_item(item : Basic) -> None:
@@ -31,7 +35,7 @@ class Index(object):
         elif not isinstance(item, (str, int, float)):
             raise TypeError(f"\"{type(item)}\" is not a valid Index type. It must be either str, int, float or a tuple consisting of them.")
         elif isinstance(item, float):
-            if math.isnan(item):
+            if Index._isnan(item):
                 raise TypeError(f"Float of nan is not a valid Index type.")
     
     @staticmethod
@@ -473,4 +477,5 @@ if __name__ == "__main__":
     
     index2 = Index([0,1,2,3,4,5,6,7,8,9])
     print(index2[0:9:-1])
+
     print(index.unique())
